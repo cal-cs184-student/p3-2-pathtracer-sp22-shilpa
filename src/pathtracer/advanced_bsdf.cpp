@@ -191,32 +191,23 @@ bool BSDF::refract(const Vector3D wo, Vector3D* wi, double ior) {
   // and true otherwise. When dot(wo,n) is positive, then wo corresponds to a
   // ray entering the surface through vacuum.
 
-    float n;
+    int ins = 1;
+    double eta = ior;
     if (wo.z > 0) {
-        n = 1 / ior;
-    }
-    else {
-        n = ior;
+        ins = -1;
+        eta = 1.0/eta; //set n value
     }
 
-    float inner = 1 - pow(n, 2) * (1 - pow(wo.z, 2));
-    if (inner < 0) {
+    //total internal refraction
+    double checker = 1- pow(eta, 2)*(1-pow(wo.z,2));
+    if (checker < 0) {
         return false;
     }
-    float newX = -1 * n * wo.x;
-    float newY = -1 * n * wo.y;
-    float newZ;
-    if (wo.z > 0) {
-        newZ = sqrt(inner) * -1;
-    }
-    else {
-        newZ= sqrt(inner);
-    }
-    *wi = Vector3D(newX, newY, newZ);
-
+    wi->x = -1.0*wo.x*eta;
+    wi->y =-1.0*wo.y*eta;
+    wi->z = sqrt(checker) * ins;
+    wi->normalize();
     return true;
-
-
 }
 
 } // namespace CGL

@@ -24,10 +24,8 @@ namespace CGL { namespace SceneObjects {
     std::cout << "[PathTracer] Initializing environment light...";
 
     // TODO 3-2 Part 3 Task 3 Steps 1,2,3
-    // Store the environment map pdf to pdf_envmap
-    // Store the marginal distribution for y to marginal_y
-    // Store the conditional distribution for x given y to conds_y
 
+      // Task 2: Store the environment map pdf to pdf_envmap
     double sum = 0;
     for (int j = 0; j < h; ++j) {
       for (int i = 0; i < w; ++i) {
@@ -37,7 +35,32 @@ namespace CGL { namespace SceneObjects {
     }
 
 
+      //normalize pdf_envmap
+      // Store the marginal distribution for y to marginal_y
+    for (int i = 0; i < w*h; i++) {
+        pdf_envmap[i] = pdf_envmap[i] / sum;
+    }
 
+    double* density = new double[h];
+    double cumul = 0;
+    for (int j = 0; j < h; j++) {
+        double p = 0;
+        for (int i = 0; i < w; i++) {
+            p+= pdf_envmap[w*j + i];
+        }
+        density[j] = p;
+        cumul += p;
+        marginal_y[j] = cumul;
+    }
+
+    // Store the conditional distribution for x given y to conds_y
+    for (int j = 0; j < h; j++) {
+        for (int i = 0; i < w; i++) {
+            int index = j*w + i;
+            conds_y[index] = conds_y[index - 1] + pdf_envmap[index] / density[j];
+        }
+    }
+    free(density);
 
     if (true)
       std::cout << "Saving out probability_debug image for debug." << std::endl;
@@ -125,24 +148,51 @@ namespace CGL { namespace SceneObjects {
     double* pdf) const {
     // TODO: 3-2 Part 3 Tasks 2 and 3 (step 4)
     // First implement uniform sphere sampling for the environment light
-    // Later implement full importance sampling
 
     // Uniform
     *wi = sampler_uniform_sphere.get_sample();
     *distToLight = INF_D;
     *pdf = 1.0 / (4.0 * PI);
 
+    Vector2D pt = dir_to_theta_phi(*wi);
+    Vector2D xy = theta_phi_to_xy(pt);
+    Vector3D radiance = bilerp(xy);
+    //return radiance;
 
+    // Later implement full importance sampling
+    //calculate (x,y)
+//    for (int i = 0; i < envMap -> h; i++) {
+//        if (marginal_y[i] > ) {
+//
+//        }
+//    }
 
-    return Vector3D();
+     //step 1
+      Vector2D sample = sampler_uniform2d.get_sample();
+      int x = (envMap -> w);
+      int y = (envMap -> h);
+
+      y = (int) (std::upper_bound(marginal_y, marginal_y + envMap -> h, sample.y) - marginal_y);
+      x = (int) (std::upper_bound(conds_y + y * envMap -> w, conds_y + y * envMap -> w + envMap -> w, sample.x) - (conds_y + y * envMap -> w));
+
+      Vector2D tphi = xy_to_theta_phi(Vector2D(x, y));
+      Vector3D dir = theta_phi_to_dir(tphi);
+
+      *wi = dir;
+      *distToLight = INF_D;
+
+      *pdf = pdf_envmap[y * envMap -> w + x] * ((envMap -> w * envMap -> h) / (float) (2 * PI * PI * sin(tphi.x)));
+      return envMap->data[y * envMap -> w + x];
   }
 
   Vector3D EnvironmentLight::sample_dir(const Ray& r) const {
     // TODO: 3-2 Part 3 Task 1
     // Use the helper functions to convert r.d into (x,y)
     // then bilerp the return value
+    Vector2D tp = dir_to_theta_phi(r.d);
+    Vector2D xy = theta_phi_to_xy(tp);
 
-    return Vector3D();
+    return bilerp(xy);
 
   }
 
