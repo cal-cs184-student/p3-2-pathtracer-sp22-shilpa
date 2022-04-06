@@ -1,60 +1,86 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-<style>  
-    div.padded {  
-      padding-top: 0px;  
-      padding-right: 100px;  
-      padding-bottom: 0.25in;  
-      padding-left: 100px;  
-    }  
-  </style> 
-<title>Your Name  |  CS 184</title>
+<style>
+  body {
+    padding: 100px;
+    width: 1000px;
+    margin: auto;
+    text-align: left;
+    font-weight: 300;
+    font-family: 'Open Sans', sans-serif;
+    color: #121212;
+  }
+  h1, h2, h3, h4 {
+    font-family: 'Source Sans Pro', sans-serif;
+  }
+</style>
+<title>CS 184 Project 3-2: Pathtracer</title>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<link rel="stylesheet" type="text/css" href="style.css" media="screen" />
+<link href="https://fonts.googleapis.com/css?family=Open+Sans|Source+Sans+Pro" rel="stylesheet">
 </head>
+
+
 <body>
-<br />
-<h1 align="middle">Assignment 3: PathTracer</h1>
-    <h2 align="middle">Your Name</h2>
 
-    <div class="padded">
-        <p>Use this section to write an overview of the assignment. All of the text in your write-up should be <em>in your own words</em>. If you need to add additional HTML features to this document, you can search the <a href="http://www.w3schools.com/">http://www.w3schools.com/</a> website for instructions. To edit the HTML, you can just copy and paste existing chunks and fill in the text and image file names appropriately.</p>
-        <o>The website writeup is intended to be a self-contained walkthrough of the assignment: we want this to be a piece of work which showcases your understanding of relevant concepts through both mesh images as well as written explanations about what you did to complete each part of the assignment. Try to be as clear and organized as possible when writing about your own output files or extensions to the assignment. We want to understand what you've achieved and how you've done it!</p> 
-        <p>If you are well-versed in web development, feel free to ditch this template and make a better looking page. Just make sure that you include all the components as we've laid them out here. </p>
+<h1 align="middle">CS 184: Computer Graphics and Imaging, Spring 2022</h1>
+<h1 align="middle">Project 2: MeshEdit</h1>
+<h2 align="middle">Shilpa Sathyanathan, CS 184</h2>
+<h4 align="middle"> Project Link: https://github.com/cal-cs184-student/p3-2-pathtracer-sp22-shilpa</h4>
+<br><br>
 
-    <h2 align="middle">Part 1: Ray Generation and Intersection</h2>
-        <p>Describe what you did in Part 1. etc...</p>
-        <div align="center">
-            <table style="width=100%">
-                <tr>
-                    <td align="middle">
-                    <img src="images/example_image.png" width="480px" />
-                    <figcaption align="middle">Results Caption: my bunny is the bounciest bunny</figcaption>
-                </tr>
-            </table>
-        </div>
-        <p>Here is an example of how to include a simple formula:</p>
-        <p align="middle"><pre align="middle">a^2 + b^2 = c^2</pre></p>
-        <p>or, alternatively, you can include an SVG image of a LaTex formula.</p>
-        <p>This time it's your job to copy-paste in the rest of the sections :)</p>
+<div>
+
+<h2 align="middle">Overview</h2>
+<p>In this project, we explored topics on geometric modeling covered in lecture by building Bezier curves and surfaces using de Casteljau algorithm, manipulated triangle meshes represented by half-edge data structure, and implemented loop subdivision.</p>
+
+<h3 align="middle">Part 1: Mirror and Glass Materials</h3>
+
+<ol>
+  <li>For this part, I used two new materials, glass and mirrors. For mirror materials, I used the reflect function and reflected the wo vector around (0,0,1) and set that two w1. I set the pdf to 1 since there is no sampling, and then returned the reflectance / cosine factor. </li>
+  <li>For glass materials, I had to use the refraction function, which required the wo vector and returned the wi direction. In refract, I used Snell’s Law to find if there is total internal reflection as described by the spec.</li>
+  <li><div align="middle">
+    <table style="width=100%">
+      <tr>
+        <td>
+          <img src="images/image1.png" align="middle" width="400px"/>
+        </td>
+        <td>
+          <img src="images/image2.png" align="middle" width="400px"/>
+        </td>
+      </tr>
+      <br>
+      <tr>
+        <td>
+          <img src="images/image3.png" align="middle" width="400px"/>
+        </td>
+        <td>
+          <img src="images/image4.png" align="middle" width="400px"/>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <img src="images/image5.png" align="middle" width="400px"/>
+        </td>
+        <td>
+          <img src="images/image6.png" align="middle" width="400px"/>
+        </td>
+      </tr>
+	</tr>
+      <tr>
+        <td>
+          <img src="images/image6.png" align="middle" width="400px"/>
+        </td>
+      </tr>
+    </table>
+  </div></li>
+  <li> When there are - bounces, there is only direct lighting, so we cannot see any of the reflection from the two glass balls in the middle. Conversely, at 100 bounces, we can see the two balls clearly. The lighting looks pretty natural as it does in the real world. As bounces increase, we can see more detail. </li>
+</ol>
 
 
+<h3 align="middle">Part 3: Environment Light</h3>
+<ol>
+  <li> Environment lightning involves sampling the environment map in order to find its radiance at a particular point. I did both uniform and importance sampling in this part.  </li>
+</ol>
 
-    <h2 align="middle">A Few Notes On Webpages</h2>
-        <p>Here are a few problems students have encountered in the past. You will probably encounter these problems at some point, so don't wait until right before the deadline to check that everything is working. Test your website on the instructional machines early!</p>
-        <ul>
-        <li>Your main report page should be called index.html.</li>
-        <li>Be sure to include and turn in all of the other files (such as images) that are linked in your report!</li>
-        <li>Use only <em>relative</em> paths to files, such as <pre>"./images/image.jpg"</pre>
-        Do <em>NOT</em> use absolute paths, such as <pre>"/Users/student/Desktop/image.jpg"</pre></li>
-        <li>Pay close attention to your filename extensions. Remember that on UNIX systems (such as the instructional machines), capitalization matters. <pre>.png != .jpeg != .jpg != .JPG</pre>
-        <li>Be sure to adjust the permissions on your files so that they are world readable. For more information on this please see this tutorial: <a href="http://www.grymoire.com/Unix/Permissions.html">http://www.grymoire.com/Unix/Permissions.html</a></li>
-        <li>And again, test your website on the instructional machines early!</li>
-</div>
 </body>
 </html>
-
-
-
-
