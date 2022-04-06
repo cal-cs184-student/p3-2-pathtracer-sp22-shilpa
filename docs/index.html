@@ -23,15 +23,14 @@
 <body>
 
 <h1 align="middle">CS 184: Computer Graphics and Imaging, Spring 2022</h1>
-<h1 align="middle">Project 2: MeshEdit</h1>
+<h1 align="middle">Project 3-2: Pathtracer</h1>
 <h2 align="middle">Shilpa Sathyanathan, CS 184</h2>
 <h4 align="middle"> Project Link: https://github.com/cal-cs184-student/p3-2-pathtracer-sp22-shilpa</h4>
 <br><br>
 
 <div>
 
-<h2 align="middle">Overview</h2>
-<p>In this project, we explored topics on geometric modeling covered in lecture by building Bezier curves and surfaces using de Casteljau algorithm, manipulated triangle meshes represented by half-edge data structure, and implemented loop subdivision.</p>
+<h2 align="middle">Overview</h2><p> In this project, I extended the path-tracing algorithm to apply it to other more interesting materials such as glass and mirrors. I also added environment light using an envmap (environment map).</p>
 
 <h3 align="middle">Part 1: Mirror and Glass Materials</h3>
 
@@ -66,11 +65,6 @@
         </td>
       </tr>
 	</tr>
-      <tr>
-        <td>
-          <img src="images/image6.png" align="middle" width="400px"/>
-        </td>
-      </tr>
     </table>
   </div></li>
   <li> When there are - bounces, there is only direct lighting, so we cannot see any of the reflection from the two glass balls in the middle. Conversely, at 100 bounces, we can see the two balls clearly. The lighting looks pretty natural as it does in the real world. As bounces increase, we can see more detail. </li>
